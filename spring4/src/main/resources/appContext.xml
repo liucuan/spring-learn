@@ -1,10 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans
                            http://www.springframework.org/schema/beans/spring-beans.xsd
                            http://www.springframework.org/schema/context
                            http://www.springframework.org/schema/context/spring-context.xsd">
-    <context:component-scan base-package="com.tone"/>
+  <context:component-scan base-package="com.tone"/>
+  <bean id="clientService" class="com.tone.service.ClientService" factory-method="createInstance"/>
+  <bean id="exampleBean" class="com.tone.service.ExampleBean">
+    <constructor-arg name="years" value="7500000"/>
+    <constructor-arg name="ultimateAnswer" value="42"/>
+  </bean>
+
+  <!-- 合并集合
+        开发者可以定义一个父样式的<list/>,<map/>,<set/>或者<props/>，
+        同时有子样式的<list/>,<map/>,<set/>或者<props/>继承并且覆盖父集合
+        子集合的值是父元素和子元素集合的合并值-->
+  <bean id="parent" abstract="true" class="com.tone.service.ComplexObject">
+    <property name="adminEmails">
+      <props>
+        <prop key="administrator">administrator@example.com</prop>
+        <prop key="support">support@example.com</prop>
+      </props>
+    </property>
+  </bean>
+  <bean id="child" parent="parent">
+    <property name="adminEmails">
+      <!-- the merge is specified on the child collection definition -->
+      <props merge="true">
+        <prop key="sales">sales@example.com</prop>
+        <prop key="support">support@example.co.uk</prop>
+      </props>
+    </property>
+  </bean>
+
+  <bean class="com.tone.framework.InstantiationTracingBeanPostProcessor"/>
+  <!--<import resource="dataSource.xml"/>-->
 </beans>
